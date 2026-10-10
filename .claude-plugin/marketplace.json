@@ -1,0 +1,13 @@
+{
+  "name": "krtiiik-skills",
+  "owner": {
+    "name": "Krtiiik"
+  },
+  "plugins": [
+    {
+      "name": "krtiiik",
+      "source": "./",
+      "description": "Personal collection of Claude Code skills."
+    }
+  ]
+}
