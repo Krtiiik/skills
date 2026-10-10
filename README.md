@@ -14,6 +14,11 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | Skill | Description |
 | --- | --- |
 | `krtiiik:grilling` | Grill the user relentlessly about a plan, decision, or idea until a shared understanding is reached. |
+| `krtiiik:init-claude-md` | Initialize Claude for a project: assemble a `CLAUDE.md` from modules you pick (Semantic Versioning, Keep a Changelog, ...). |
+
+### Adding an `init-claude-md` module
+
+Drop a Markdown file into `skills/init-claude-md/modules/`. Its frontmatter holds `name`, `description`, optional `suggests` and optional `decisions` (each with `id`, `question`, `scout` hint, and `options`); the body is the text inserted into `CLAUDE.md`, with `{{id}}` placeholders filled from the decisions. See `SKILL.md` there for the full format.
 
 ## Credits
 
