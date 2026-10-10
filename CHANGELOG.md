@@ -1,0 +1,39 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.2.0] - 2026-10-11
+
+### Added
+
+- `setup-project` module `issue-tracking`: work with GitHub or GitLab issues through the `gh` or `glab` CLI, with a short command guide for each and an approval rule for anything that writes.
+- `setup-project` module `auto-commit`: choose when Claude commits on its own and whether large work may be split into several commits.
+- `setup-project` module `testing`: describes how the project's tests are organised and run (all, related to a change, single, fast vs slow), found by scouting the project, plus general testing guidelines.
+
+### Changed
+
+- The commit cadence decision moved out of `better-git-messages` into the new `auto-commit` module.
+
+### Fixed
+
+- Corrected a broken link path in the `setup-project` skill description.
+
+## [0.1.0] - 2026-10-10
+
+### Added
+
+- `krtiiik` plugin with a marketplace manifest, installable via `/plugin marketplace add Krtiiik/skills`.
+- `grilling` skill: grills the user about a plan, decision, or idea in clickable question rounds, ending in plan-review approval. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
+- `setup-project` skill (initially `init-claude-md`): assembles a project's `CLAUDE.md`, plus optional settings, hooks, and doc files, from the modules the user picks.
+- `setup-project` modules:
+  - `semver`: default to Semantic Versioning, never bump unprompted, tag releases on request.
+  - `keep-a-changelog`: maintain a `CHANGELOG.md` updated with every user-facing change.
+  - `better-git-messages`: consistent commit message convention, optional conditional commit scopes, and commit bodies that explain why.
+  - `git-guardrails`: choose which dangerous git operations need confirmation, enforced by permission rules or a hook.
+  - `filesystem-guardrails`: choose which dangerous filesystem operations need confirmation, enforced by permission rules or a hook.
+  - `project-docs`: Claude-facing docs (glossary, architecture, conventions, shared TODO list) that Claude keeps current.
