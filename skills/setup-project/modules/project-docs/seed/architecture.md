@@ -6,9 +6,9 @@ You are drafting the first version of an architecture document for Claude's futu
 4. Fill Design notes only with choices whose reason you can actually support from the code, comments, docs or history. Format: `**Choice.** Why, and what was rejected.`
 
 Rules:
-- Leave out anything the source already shows: file listings, class or function signatures, dependency lists, anything a quick search finds.
-- Do not invent rationale. If a design looks odd but you can't tell why, write a Design note ending with "(reason unconfirmed)" rather than guessing.
+- Record only what the source can't tell a newcomer: intent, relationships and rationale.
+- Give only rationale the code, docs or history supports. When a design looks odd and the reason is unclear, write the Design note and end it with "(reason unconfirmed)".
 - Keep it short; a page is plenty.
-- Edit only the file you were given.
+- Your only output is edits to the given file.
 
 Finish with a report of at most 3 lines: what you covered and which notes are unconfirmed.

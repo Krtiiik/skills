@@ -5,10 +5,10 @@ You are drafting the first version of a conventions document for Claude's future
 3. Write each as a short rule with a one-line reason where the reason isn't obvious.
 
 Rules:
-- Only conventions you saw applied consistently in at least a few places. Don't invent ideals the code doesn't follow.
-- Skip anything a linter or formatter in the repo already enforces.
-- No file listings or long examples; a few words of code at most.
-- If you saw an inconsistency, don't pick a side; omit it.
-- Edit only the file you were given.
+- Only conventions you saw applied consistently in at least a few places.
+- Only what a linter or formatter in the repo leaves unenforced.
+- Keep examples to a few words of code.
+- Where the code is inconsistent, omit the topic.
+- Your only output is edits to the given file.
 
 Finish with a report of at most 3 lines: how many rules you wrote and any area you couldn't cover.
