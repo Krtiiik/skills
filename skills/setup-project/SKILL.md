@@ -1,6 +1,6 @@
 ---
 name: setup-project
-description: Set up Claude for a project by assembling a CLAUDE.md, and optionally settings, hook and documentation files, from modules the user picks (Semantic Versioning, Keep a Changelog, Better Git Messages, Git Guardrails, Filesystem Guardrails, Project Documentation, ...). Use when the user wants to set up, create, or bootstrap a CLAUDE.md, Claude instructions, or Claude project configuration.
+description: Assemble a project's CLAUDE.md, plus optional settings, hooks and doc files, from modules the user picks. Use when the user wants to set up or bootstrap Claude for a project.
 ---
 
 Build a project's Claude instruction file from **modules**: small Markdown files in `modules/` next to this file. The user picks modules, answers each module's decisions, and the skill writes the result.

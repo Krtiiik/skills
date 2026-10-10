@@ -17,4 +17,3 @@ decisions:
 
 - Use Semantic Versioning (semver.org) with {{scheme}} version numbers.
 - Never bump the version on your own initiative. Only when explicitly asked for a release or version bump, bump per semver rules and tag the commit (`git tag -a v<version> -m "v<version>"`). You may mention in one line that something looks release-worthy, but don't act on it.
-- Pushing a tag can trigger release automation and is visible to others, so confirm before pushing it, same as any other push.
