@@ -22,11 +22,12 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | --- | --- |
 | Semantic Versioning | Default to semver, never bump versions unprompted, tag releases on request. |
 | Keep a Changelog | Maintain a `CHANGELOG.md` in Keep a Changelog format, updated with every user-facing change. |
-| Better Git Messages | Consistent commit messages, sensible commit cadence, and confirmation before risky git operations (optionally enforced via permission rules or a hook). |
+| Better Git Messages | Consistent commit messages, sensible commit cadence, and commit bodies that explain why. |
+| Git Guardrails | Choose which dangerous git operations (push, history rewrites, discarding work, remote/config changes, submodules and worktrees, ...) need your confirmation, enforced via permission rules or a hook. Explains in `CLAUDE.md` that they exist and must not be avoided. |
 
 ### Adding a `setup-project` module
 
-Drop a Markdown file into `skills/setup-project/modules/`. Its frontmatter holds `name`, `description`, optional `suggests` and optional `decisions` (each with `id`, `question`, `scout` hint, and `options`); the body is the text inserted into `CLAUDE.md`, with `{{id}}` placeholders filled from the decisions. An option can also carry `settings` (merged into the project's settings file) and `files` (copied from a `modules/<id>/` folder). See `SKILL.md` there for the full format.
+Drop a Markdown file into `skills/setup-project/modules/`. Its frontmatter holds `name`, `description`, optional `suggests` and optional `decisions` (each with `id`, `question`, `scout` hint, and `options`); the body is the text inserted into `CLAUDE.md`, with `{{id}}` placeholders filled from the decisions. An option can also carry `settings` (merged into the project's settings file), `files` (copied from a `modules/<id>/` folder), and a `when` condition tying them to another decision's choice. Decisions can be `multi` (pick several) or `type: path` (a folder, with `{{id:rel}}` relative to the `CLAUDE.md`), and an option can carry a `seed` prompt that a sub-agent uses to draft an installed file. See `SKILL.md` there for the full format.
 
 ## Credits
 

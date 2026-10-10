@@ -1,7 +1,7 @@
 ---
 name: Better Git Messages
-description: Consistent commit messages, sensible commit cadence, and confirmation before risky git operations.
-suggests: [semver, keep-a-changelog]
+description: Consistent commit messages, sensible commit cadence, and commit bodies that explain why.
+suggests: [semver, keep-a-changelog, git-guardrails]
 decisions:
   - id: convention
     question: Which commit message convention does this project use?
@@ -33,36 +33,6 @@ decisions:
       - label: Always
         value: "Always add a body after a blank line that explains why the change was made, not what it does; the diff shows what."
         description: Richer history for the cost of a longer message on every commit.
-  - id: enforcement
-    question: How should confirmation before risky git operations be enforced?
-    scout: Check .claude/settings.json and .claude/settings.local.json for existing permissions or hooks, and whether a POSIX shell is available (bash on PATH, or Git Bash on Windows). Recommend permission rules unless a hook already exists or flag-level matching is clearly wanted.
-    options:
-      - value: permission rules
-        description: Writes permissions.ask rules to the settings file. Simple and cross-platform; the harness itself prompts for each matching command.
-        settings:
-          permissions:
-            ask:
-              - "Bash(git push *)"
-              - "Bash(git reset --hard *)"
-              - "Bash(git rebase *)"
-              - "Bash(git commit * --amend*)"
-              - "Bash(git filter-branch *)"
-              - "Bash(git * --no-verify*)"
-              - "Bash(git * --no-gpg-sign*)"
-              - "Bash(git -c commit.gpgsign=false *)"
-      - value: hook
-        description: Copies a small shell script to .claude/hooks/ and registers it as a PreToolUse hook on Bash. Matches flags anywhere in the command, but needs a POSIX shell.
-        files:
-          .claude/hooks/git-guard.sh: git-guard.sh
-        settings:
-          hooks:
-            PreToolUse:
-              - matcher: Bash
-                hooks:
-                  - type: command
-                    command: sh "$CLAUDE_PROJECT_DIR/.claude/hooks/git-guard.sh"
-      - value: text only
-        description: Only the instructions in CLAUDE.md, with no settings changes. Claude is told to ask first but nothing enforces it.
 ---
 
 ## Git commits
@@ -71,5 +41,3 @@ decisions:
 - Avoid vague messages ("fix stuff", "update files"); the summary should say what changed.
 - {{body}}
 - {{cadence}}
-- Confirm with the user before pushing, force-pushing, rewriting history (`reset --hard`, `rebase`, `commit --amend` on pushed commits, `filter-branch`), or pushing tags, since these are visible to others or can trigger release automation.
-- Never skip hooks or commit signing (`--no-verify`, `--no-gpg-sign`) unless explicitly asked.
