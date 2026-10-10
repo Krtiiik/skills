@@ -14,7 +14,7 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | Skill | Description |
 | --- | --- |
 | `krtiiik:grilling` | Grill the user about a plan, decision, or idea in clickable question rounds, then confirm the shared understanding through plan-review approval. |
-| `krtiiik:setup-project` | Set up Claude for a project: assemble a `CLAUDE.md` (plus optional settings and hooks) from the [modules](skills/setup-project/modules/) you pick. |
+| `krtiiik:setup-project` | Set up Claude for a project: assemble a `CLAUDE.md` (plus optional settings and hooks) from the [modules](./skills/setup-project/modules/) you pick. |
 
 ### Adding a `setup-project` module
 
