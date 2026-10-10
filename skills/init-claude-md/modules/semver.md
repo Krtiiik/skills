@@ -9,8 +9,8 @@ decisions:
     options:
       - value: MAJOR.MINOR.PATCH
         description: Full semver; fixes bump PATCH, features bump MINOR, breaking changes bump MAJOR.
-      - value: MAJOR.MINOR (no patch component; fixes bump MINOR)
-        description: Two-part versions for projects that don't ship patch releases separately.
+      - value: MAJOR.MINOR
+        description: Two-part versions for non-code projects (docs, content, notes) where "fixes" don't apply; content updates bump MINOR, major rewrites or restructures bump MAJOR.
 ---
 
 ## Versioning
