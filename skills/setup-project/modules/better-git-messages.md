@@ -1,7 +1,7 @@
 ---
 name: Better Git Messages
-description: Consistent commit messages, sensible commit cadence, and commit bodies that explain why.
-suggests: [semver, keep-a-changelog, git-guardrails]
+description: Consistent commit message format, optional scopes, and commit bodies that explain why.
+suggests: [auto-commit, semver, keep-a-changelog, git-guardrails]
 decisions:
   - id: convention
     question: Which commit message convention does this project use?
@@ -29,16 +29,6 @@ decisions:
       - label: Always scope
         value: "Commit scopes: always add a parenthesised scope naming the area the change touches, e.g. `fix(parser): handle empty input`. Use the module, package, or top-level folder name, reuse scope names already in the history, and for cross-cutting changes use the most affected area."
         description: Uniform, filterable history (`git log --grep '(parser)'`), at the cost of picking and maintaining a scope vocabulary.
-  - id: cadence
-    question: When should Claude commit?
-    scout: Check whether the history shows small frequent commits or large batched ones (git log --stat --oneline -20), and whether the user has a global CLAUDE.md preference. Without evidence, recommend proactive commits.
-    options:
-      - label: Proactively
-        value: "Commit proactively when a logical chunk of work is done, without waiting to be asked each time. Keep each commit to one logical change."
-        description: Small, reviewable commits; Claude commits on its own but never pushes.
-      - label: Only when asked
-        value: "Commit only when explicitly asked. When asked, keep each commit to one logical change."
-        description: Full control over when history is written; Claude leaves changes in the working tree.
   - id: body
     question: When should commit messages have a body?
     scout: Look at how many recent commits have a body (git log -30 --format=%b). Recommend the matching habit; with no history, recommend body only when needed.
@@ -57,4 +47,3 @@ decisions:
 - {{scope}}
 - Avoid vague messages ("fix stuff", "update files"); the summary should say what changed.
 - {{body}}
-- {{cadence}}
