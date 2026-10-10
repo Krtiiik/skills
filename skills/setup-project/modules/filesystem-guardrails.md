@@ -10,7 +10,7 @@ decisions:
     options:
       - key: delete
         label: Deleting
-        value: "- **Deleting**: `rm`, `rmdir`, `unlink`, `shred`, `find -delete`, and in PowerShell `Remove-Item`, `del`, and `rd`, which bypass the trash and cannot be undone. Deleting disposable locations (temp folders, scratchpads, and build or dependency output such as `node_modules`, `bin`, `obj`, `dist`, `build`, `target`) is exempt when a hook enforces the guardrails; permission rules cannot make that exception, so there every delete asks."
+        value: "- **Deleting**: `rm`, `rmdir`, `unlink`, `shred`, `find -delete`, and in PowerShell `Remove-Item`, `del`, and `rd`."
         description: "rm, rmdir, unlink, shred, find -delete, Remove-Item, del, rd. A hook exempts temp and build-output folders; permission rules cannot."
         when: {enforcement: rules}
         settings:
@@ -30,7 +30,7 @@ decisions:
               - "PowerShell(rd *)"
       - key: move
         label: Moving & overwriting
-        value: "- **Moving and overwriting**: `mv`, forced `cp`, `truncate`, `tee`, and in PowerShell `Move-Item`, forced `Copy-Item`, `Set-Content`, `Out-File`, and `Clear-Content`, which replace existing files without a backup. Shell redirection (`>`) is guarded only when a hook enforces the guardrails; permission rules cannot match it."
+        value: "- **Moving and overwriting**: `mv`, forced `cp`, `truncate`, `tee`, and in PowerShell `Move-Item`, forced `Copy-Item`, `Set-Content`, `Out-File`, and `Clear-Content`, plus shell redirection (`>`) where the enforcement can match it."
         description: "mv, cp -f, truncate, tee, Move-Item, Set-Content, Out-File. A hook also catches > redirects; permission rules cannot."
         when: {enforcement: rules}
         settings:
@@ -52,7 +52,7 @@ decisions:
               - "PowerShell(Clear-Content *)"
       - key: perms
         label: Permissions & ownership
-        value: "- **Permissions and ownership**: recursive or world-writable `chmod`, and `chown`, `chgrp`, `icacls`, `takeown`, which can lock you out of files or expose them. A hook lets plain `chmod +x` and `chmod 644` through; permission rules match only by prefix, so they miss flags in unusual positions."
+        value: "- **Permissions and ownership**: recursive or world-writable `chmod`, and `chown`, `chgrp`, `icacls`, `takeown`."
         description: "chmod -R / 777, chown, chgrp, icacls, takeown. A hook lets plain chmod +x through."
         when: {enforcement: rules}
         settings:
@@ -74,7 +74,7 @@ decisions:
               - "PowerShell(Set-Acl *)"
       - key: disk
         label: Disk-level
-        value: "- **Disk-level**: `dd`, `mkfs`, `fdisk`, `parted`, `wipefs`, and in Windows `format` and `diskpart` (including `Format-Volume` and `Clear-Disk`), which wipe or reformat whole devices and partitions."
+        value: "- **Disk-level**: `dd`, `mkfs`, `fdisk`, `parted`, `wipefs`, and in Windows `format` and `diskpart` (including `Format-Volume` and `Clear-Disk`)."
         description: "dd, mkfs, fdisk, parted, wipefs, format, diskpart, Format-Volume, Clear-Disk."
         when: {enforcement: rules}
         settings:
@@ -96,7 +96,7 @@ decisions:
               - "PowerShell(Initialize-Disk *)"
       - key: outside
         label: Outside the project
-        value: "- **Outside the project**: deleting, moving, or changing permissions of anything outside the project folder: absolute paths, `~`, `$HOME`, drive roots, and `..` (for example `rm -rf ~`). Temp folders are exempt. This group is enforced only by a hook; permission rules cannot match on paths, so with them it does nothing."
+        value: "- **Outside the project**: deleting, moving, or changing permissions of anything outside the project folder: absolute paths, `~`, `$HOME`, drive roots, and `..` (for example `rm -rf ~`)."
         description: "Targets outside the project: absolute paths, ~, $HOME, drive roots, .. . Hook only; permission rules cannot match paths."
   - id: enforcement
     question: How should the guardrails be enforced?
@@ -104,11 +104,11 @@ decisions:
     options:
       - key: rules
         label: Permission rules
-        value: "permission rules (`permissions.ask` in the project's Claude settings), so the harness itself prompts for each matching command"
+        value: "permission rules (`permissions.ask` in the project's Claude settings)"
         description: Writes permissions.ask rules to the settings file for the Bash and PowerShell tools. Simple and cross-platform; matches by command prefix, so it can miss flags in unusual positions, asks for every delete, and cannot enforce Outside the project.
       - key: hook
         label: Hook
-        value: "a `PreToolUse` hook on Bash and PowerShell (`.claude/hooks/fs-guard.sh`, registered in the project's Claude settings) that asks for confirmation on matching commands"
+        value: "a `PreToolUse` hook (`.claude/hooks/fs-guard.sh`, registered in the project's Claude settings)"
         description: Copies a small shell script to .claude/hooks/ and registers it as a PreToolUse hook on Bash and PowerShell. Matches flags anywhere in the command, exempts temp and build-output deletes, and enforces Outside the project, but needs a POSIX shell.
         files:
           .claude/hooks/fs-guard.sh: fs-guard.sh

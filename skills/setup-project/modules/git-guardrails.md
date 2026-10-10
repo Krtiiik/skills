@@ -10,7 +10,7 @@ decisions:
     options:
       - key: publish
         label: Publishing
-        value: "- **Publishing**: `git push`, including force-pushes and tag pushes, which are visible to others or can trigger release automation."
+        value: "- **Publishing**: `git push`, including force-pushes and tag pushes."
         description: "git push in any form."
         when: {enforcement: rules}
         settings:
@@ -32,7 +32,7 @@ decisions:
               - "Bash(git filter-branch *)"
       - key: skip
         label: Skipping safeguards
-        value: "- **Skipping safeguards**: `--no-verify`, `--no-gpg-sign`, and `commit.gpgsign=false`, which bypass git hooks and commit signing."
+        value: "- **Skipping safeguards**: `--no-verify`, `--no-gpg-sign`, and `commit.gpgsign=false`."
         description: "--no-verify, --no-gpg-sign, commit.gpgsign=false."
         when: {enforcement: rules}
         settings:
@@ -43,7 +43,7 @@ decisions:
               - "Bash(git -c commit.gpgsign=false *)"
       - key: discard
         label: Discarding work
-        value: "- **Discarding work**: `git clean`, `git restore`, `git checkout -- <path>` or `git checkout .`, `git branch -D`, and `git stash drop` or `clear`, which destroy uncommitted or unmerged work."
+        value: "- **Discarding work**: `git clean`, `git restore`, `git checkout -- <path>` or `git checkout .`, `git branch -D`, and `git stash drop` or `clear`."
         description: "clean, restore, checkout -- / checkout ., branch -D, stash drop/clear."
         when: {enforcement: rules}
         settings:
@@ -59,7 +59,7 @@ decisions:
               - "Bash(git stash clear*)"
       - key: remote
         label: Remote/config changes
-        value: "- **Remote and config changes**: `git remote add`, `set-url`, and `remove`, and `git config --global` or `--system`, which change where code is sent or how git behaves everywhere."
+        value: "- **Remote and config changes**: `git remote add`, `set-url`, and `remove`, and `git config --global` or `--system`."
         description: "remote add/set-url/remove, config --global/--system."
         when: {enforcement: rules}
         settings:
@@ -73,7 +73,7 @@ decisions:
               - "Bash(git config --system *)"
       - key: nested
         label: Submodules & worktrees
-        value: "- **Submodules and worktrees**: `git submodule deinit`, `git submodule update --force`, `git worktree remove`, and `git worktree prune`, which can delete checked-out content. Worktrees Claude created itself under `.claude/worktrees/` are exempt when a hook enforces the guardrails; permission rules cannot make that exception, so there every worktree removal asks."
+        value: "- **Submodules and worktrees**: `git submodule deinit`, `git submodule update --force`, `git worktree remove`, and `git worktree prune`."
         description: "submodule deinit/update --force, worktree remove/prune. A hook exempts Claude's own .claude/worktrees/; permission rules cannot."
         when: {enforcement: rules}
         settings:
@@ -90,11 +90,11 @@ decisions:
     options:
       - key: rules
         label: Permission rules
-        value: "permission rules (`permissions.ask` in the project's Claude settings), so the harness itself prompts for each matching command"
+        value: "permission rules (`permissions.ask` in the project's Claude settings)"
         description: Writes permissions.ask rules to the settings file. Simple and cross-platform; matches by command prefix, so it can miss flags in unusual positions.
       - key: hook
         label: Hook
-        value: "a `PreToolUse` hook on Bash (`.claude/hooks/git-guard.sh`, registered in the project's Claude settings) that asks for confirmation on matching commands"
+        value: "a `PreToolUse` hook (`.claude/hooks/git-guard.sh`, registered in the project's Claude settings)"
         description: Copies a small shell script to .claude/hooks/ and registers it as a PreToolUse hook on Bash. Matches flags anywhere in the command and can exempt Claude's own worktrees, but needs a POSIX shell.
         files:
           .claude/hooks/git-guard.sh: git-guard.sh
