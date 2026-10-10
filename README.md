@@ -14,9 +14,9 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | Skill | Description |
 | --- | --- |
 | `krtiiik:grilling` | Grill the user relentlessly about a plan, decision, or idea until a shared understanding is reached. |
-| `krtiiik:init-claude-md` | Initialize Claude for a project: assemble a `CLAUDE.md` from modules you pick (Semantic Versioning, Keep a Changelog, ...). |
+| `krtiiik:setup-project` | Set up Claude for a project: assemble a `CLAUDE.md` (plus optional settings and hooks) from modules you pick (Semantic Versioning, Keep a Changelog, ...). |
 
-### `init-claude-md` modules
+### `setup-project` modules
 
 | Module | Description |
 | --- | --- |
@@ -24,9 +24,9 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | Keep a Changelog | Maintain a `CHANGELOG.md` in Keep a Changelog format, updated with every user-facing change. |
 | Better Git Messages | Consistent commit messages, sensible commit cadence, and confirmation before risky git operations (optionally enforced via permission rules or a hook). |
 
-### Adding an `init-claude-md` module
+### Adding a `setup-project` module
 
-Drop a Markdown file into `skills/init-claude-md/modules/`. Its frontmatter holds `name`, `description`, optional `suggests` and optional `decisions` (each with `id`, `question`, `scout` hint, and `options`); the body is the text inserted into `CLAUDE.md`, with `{{id}}` placeholders filled from the decisions. An option can also carry `settings` (merged into the project's settings file) and `files` (copied from a `modules/<id>/` folder). See `SKILL.md` there for the full format.
+Drop a Markdown file into `skills/setup-project/modules/`. Its frontmatter holds `name`, `description`, optional `suggests` and optional `decisions` (each with `id`, `question`, `scout` hint, and `options`); the body is the text inserted into `CLAUDE.md`, with `{{id}}` placeholders filled from the decisions. An option can also carry `settings` (merged into the project's settings file) and `files` (copied from a `modules/<id>/` folder). See `SKILL.md` there for the full format.
 
 ## Credits
 

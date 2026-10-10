@@ -1,6 +1,6 @@
 ---
-name: init-claude-md
-description: Initialize Claude for a project by assembling a CLAUDE.md from modules the user picks (Semantic Versioning, Keep a Changelog, ...). Use when the user wants to set up, create, or bootstrap a CLAUDE.md or Claude instructions for a project.
+name: setup-project
+description: Set up Claude for a project by assembling a CLAUDE.md, and optionally settings and hook files, from modules the user picks (Semantic Versioning, Keep a Changelog, Better Git Messages, ...). Use when the user wants to set up, create, or bootstrap a CLAUDE.md, Claude instructions, or Claude project configuration.
 ---
 
 Build a project's Claude instruction file from **modules**: small Markdown files in `modules/` next to this file. The user picks modules, answers each module's decisions, and the skill writes the result.
