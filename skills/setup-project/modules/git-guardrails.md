@@ -1,7 +1,7 @@
 ---
 name: Git Guardrails
 description: Pick which dangerous git operations need your confirmation (push, history rewrites, discarding work, ...) and enforce them with permission rules or a hook.
-suggests: [better-git-messages]
+suggests: [better-git-messages, filesystem-guardrails]
 decisions:
   - id: groups
     multi: true

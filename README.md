@@ -24,6 +24,7 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | Keep a Changelog | Maintain a `CHANGELOG.md` in Keep a Changelog format, updated with every user-facing change. |
 | Better Git Messages | Consistent commit messages, sensible commit cadence, and commit bodies that explain why. |
 | Git Guardrails | Choose which dangerous git operations (push, history rewrites, discarding work, remote/config changes, submodules and worktrees, ...) need your confirmation, enforced via permission rules or a hook. Explains in `CLAUDE.md` that they exist and must not be avoided. |
+| Filesystem Guardrails | Choose which dangerous filesystem operations (deleting, overwriting, permission changes, disk-level commands, targets outside the project) need your confirmation, enforced via permission rules or a hook. The hook exempts temp and build-output deletes. Explains in `CLAUDE.md` that they exist and must not be avoided. |
 | Project Documentation | Docs written for Claude (`CONTEXT.md` glossary, `ARCHITECTURE.md`, `CONVENTIONS.md`, a shared `TODO.md`), loaded and kept current by Claude. Optionally drafted from your codebase by parallel sub-agents. |
 
 ### Adding a `setup-project` module
