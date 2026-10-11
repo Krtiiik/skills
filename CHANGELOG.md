@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `worktree-task` skill: runs one task in a worktree session (optionally via another skill such as `grilling`), commits, presents a uniform report (summary, commits, tests, notes, to consider, TODO suggestions), and on request merges main into the branch and fast-forwards main under a git-ref advisory lock so peer sessions do not lose work.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added
