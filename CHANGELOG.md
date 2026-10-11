@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `setup-project` module `filesystem-guardrails`: the `fs-guard.sh` hook no longer asks about `>` redirects into temp folders or build and dependency output.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added

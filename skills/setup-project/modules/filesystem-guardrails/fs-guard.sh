@@ -3,7 +3,7 @@
 # Usage: fs-guard.sh <group>...   with groups from: delete move perms disk outside
 # Reads the tool-call JSON on stdin and matches the raw text (no jq needed), so it
 # may also ask when a risky command merely appears in a description; that is fine.
-# Deletes (and the outside-the-project check) skip disposable targets: temp folders
+# Deletes, > redirects (and the outside-the-project check) skip disposable targets: temp folders
 # and build or dependency output. Anything it cannot parse with confidence still asks.
 
 set -f
@@ -90,10 +90,20 @@ outside_risky() {
   return 0
 }
 
-# A single > redirect (not >>, 2>, or into /dev/null, $null, nul) overwrites its target.
+# A single > redirect (not >>, 2>, or into /dev/null, $null, nul) overwrites its target,
+# unless the target is disposable (temp folder, build or dependency output).
 overwrites() {
-  printf '%s' "$body" | grep -Eio '[[:space:]]>[[:space:]]*[^[:space:]>&"|;]+' |
-    grep -Eviq '>[[:space:]]*(/dev/null|\$null|nul)$'
+  if printf '%s' "$body" | grep -Eio '[[:space:]]>[[:space:]]*[^[:space:]>&"|;]+' |
+    sed -E 's/^[[:space:]]*>[[:space:]]*//' |
+    while IFS= read -r t; do
+      t=${t#\'}
+      t=${t%\'}
+      case $(printf '%s' "$t" | tr '[:upper:]' '[:lower:]') in /dev/null|\$null|nul) continue ;; esac
+      disposable "$t" || exit 1
+    done; then
+    return 1
+  fi
+  return 0
 }
 
 reason=""
