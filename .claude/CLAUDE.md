@@ -12,6 +12,38 @@
 - Avoid vague messages ("fix stuff", "update files"); the summary should say what changed.
 - Add a body (after a blank line) only when the reason for the change is not obvious from the summary. Explain why, not what; the diff shows what.
 
+## Issue handling
+
+- Read issues (list, view) freely whenever they help you understand the task.
+- Creating, commenting on, editing, closing or reopening an issue notifies other people. Do it only when the user explicitly asked for that action; otherwise ask first with AskUserQuestion.
+
+## Changelog
+
+- Maintain `CHANGELOG.md` in the Keep a Changelog format (keepachangelog.com).
+- Log every user-facing change (feature, fix, behavior change) under an `## [Unreleased]` section at the top, added in the same commit as the change itself, not batched later.
+- Only when explicitly asked for a release, move `[Unreleased]` under a new `## [<version>] - YYYY-MM-DD` heading.
+
+## Project documentation
+
+Docs for Claude, kept in the repository:
+
+- @CONTEXT.md: glossary of the project's terms and top-level concepts. Use these terms exactly in code, commits and conversation.
+- `TODO.md`: task list shared between the user and you, with `## Inbox` (written by the user) and `## Suggested` (proposed by you) sections and items as `- [ ] task: why or context`.
+  - Work on items only when the user asks ("work on the TODO", "do item 3"); never start them unprompted.
+  - When asked to find bugs, suggest features or leave a handoff, add the findings under `## Suggested` for the user to triage. Don't add items unprompted.
+  - Tick an item (`- [x]`) in the same change that completes it.
+
+Maintaining them:
+
+- Record only what the source can't tell you: intent, vocabulary, rationale and non-obvious relationships. Don't list files, signatures or anything a quick search would find.
+- Update a doc in the same change that makes it stale or introduces something worth recording (a new term, a design choice and its reason, a convention). Don't wait to be asked and don't batch it for later.
+- Keep entries short. When a doc and the code disagree, trust the code and fix the doc.
+
+## Versioning
+
+- Use Semantic Versioning (semver.org) with MAJOR.MINOR.PATCH version numbers.
+- Never bump the version on your own initiative. Only when explicitly asked for a release or version bump, bump per semver rules and tag the commit (`git tag -a v<version> -m "v<version>"`). You may mention in one line that something looks release-worthy, but don't act on it.
+
 ## Filesystem guardrails
 
 This project has filesystem guardrails: certain dangerous or irreversible filesystem operations are blocked automatically, without a prompt. They are enforced by a `PreToolUse` hook (`.claude/hooks/fs-guard.sh`, registered in the project's Claude settings) on both the Bash and PowerShell tools. The guarded groups are:
@@ -68,29 +100,7 @@ The hook checks the literal path in the command, so it can't be tricked and neit
 - The hook matches raw command text, so a command that only mentions a guarded operation (in a commit message, say) can be blocked too; reword it.
 - In a sub-session or agent, finish the rest of the task and report the blocked operation to the parent session or the user.
 
-## Changelog
+## Issue tracking
 
-- Maintain `CHANGELOG.md` in the Keep a Changelog format (keepachangelog.com).
-- Log every user-facing change (feature, fix, behavior change) under an `## [Unreleased]` section at the top, added in the same commit as the change itself, not batched later.
-- Only when explicitly asked for a release, move `[Unreleased]` under a new `## [<version>] - YYYY-MM-DD` heading.
-
-## Project documentation
-
-Docs for Claude, kept in the repository:
-
-- @CONTEXT.md: glossary of the project's terms and top-level concepts. Use these terms exactly in code, commits and conversation.
-- `TODO.md`: task list shared between the user and you, with `## Inbox` (written by the user) and `## Suggested` (proposed by you) sections and items as `- [ ] task: why or context`.
-  - Work on items only when the user asks ("work on the TODO", "do item 3"); never start them unprompted.
-  - When asked to find bugs, suggest features or leave a handoff, add the findings under `## Suggested` for the user to triage. Don't add items unprompted.
-  - Tick an item (`- [x]`) in the same change that completes it.
-
-Maintaining them:
-
-- Record only what the source can't tell you: intent, vocabulary, rationale and non-obvious relationships. Don't list files, signatures or anything a quick search would find.
-- Update a doc in the same change that makes it stale or introduces something worth recording (a new term, a design choice and its reason, a convention). Don't wait to be asked and don't batch it for later.
-- Keep entries short. When a doc and the code disagree, trust the code and fix the doc.
-
-## Versioning
-
-- Use Semantic Versioning (semver.org) with MAJOR.MINOR.PATCH version numbers.
-- Never bump the version on your own initiative. Only when explicitly asked for a release or version bump, bump per semver rules and tag the commit (`git tag -a v<version> -m "v<version>"`). You may mention in one line that something looks release-worthy, but don't act on it.
+- Issues live on GitHub, through the `gh` CLI. Read `ISSUE-TRACKING.md` for the commands before your first use.
+- When a `gh` command fails on authentication, report the error and let the user log in.
