@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `worktree-task` skill: runs one task in a worktree session (optionally via another skill such as `grilling`), commits, presents a uniform report (summary, commits, tests, notes, to consider, TODO suggestions), and on request merges main into the branch and fast-forwards main under a git-ref advisory lock so peer sessions do not lose work.
+
 ### Changed
 
-- `setup-project` module `filesystem-guardrails`: the `fs-guard.sh` hook no longer asks about `>` redirects into temp folders or build and dependency output.
+- `setup-project` splits its "modules" into two categories of topics: **guidelines** (general rules for how Claude approaches work) in `guidelines/` and **technicalities** (project-specific commands, tooling and enforcement) in `technicalities/`. The picker asks guidelines first, then technicalities, and the generated file lists guidelines before technicalities.
+- `testing` is now two topics: the guideline `testing` (rules) and the technicality `test-commands` (how tests are organised and run). `issue-tracking` likewise splits into the guideline `issue-handling` (read freely, ask before writing) and the technicality `issue-tracking` (platform and CLI guide).
+- The `git-guardrails` and `filesystem-guardrails` topics are now technicalities; `project-docs`, `auto-commit`, `better-git-messages`, `keep-a-changelog` and `semver` are guidelines.
+- `setup-project` technicality `filesystem-guardrails`: the `fs-guard.sh` hook no longer asks about `>` redirects into temp folders or build and dependency output.
 
 ## [0.2.0] - 2026-10-11
 
