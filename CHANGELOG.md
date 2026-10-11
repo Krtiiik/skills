@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `worktree-task` skill: runs one task in a worktree session (optionally via another skill such as `grilling`), commits, presents a uniform report (summary, commits, tests, notes, to consider, TODO suggestions), and on request merges main into the branch and fast-forwards main under a git-ref advisory lock so peer sessions do not lose work.
 - `setup-project` now checks upfront for existing Claude files (instruction files, settings, hooks, topic doc files), lists them, and asks once whether to append, overwrite or cancel.
+- `worktree-cleanup` skill: lists linked worktrees and local branches already merged into main (clean worktrees only) and removes the ones the user picks.
 
 ### Changed
 
