@@ -14,21 +14,36 @@
 
 ## Filesystem guardrails
 
-This project has filesystem guardrails: certain dangerous or irreversible filesystem operations need the user's confirmation. They are enforced by a `PreToolUse` hook (`.claude/hooks/fs-guard.sh`, registered in the project's Claude settings). The guarded groups are:
+This project has filesystem guardrails: certain dangerous or irreversible filesystem operations are blocked automatically, without a prompt. They are enforced by a `PreToolUse` hook (`.claude/hooks/fs-guard.sh`, registered in the project's Claude settings) on both the Bash and PowerShell tools. The guarded groups are:
 
 - **Deleting**: `rm`, `rmdir`, `unlink`, `shred`, `find -delete`, and in PowerShell `Remove-Item`, `del`, and `rd`.
-- **Moving and overwriting**: `mv`, forced `cp`, `truncate`, `tee`, and in PowerShell `Move-Item`, forced `Copy-Item`, `Set-Content`, `Out-File`, and `Clear-Content`, plus shell redirection (`>`) where the enforcement can match it.
+- **Moving and overwriting**: `mv`, forced `cp`, `truncate`, `tee`, and in PowerShell `Move-Item`, forced `Copy-Item`, `Set-Content`, `Out-File`, and `Clear-Content`, plus shell redirection (`>`) where the hook can match it.
 - **Permissions and ownership**: recursive or world-writable `chmod`, and `chown`, `chgrp`, `icacls`, `takeown`.
 - **Disk-level**: `dd`, `mkfs`, `fdisk`, `parted`, `wipefs`, and in Windows `format` and `diskpart` (including `Format-Volume` and `Clear-Disk`).
 - **Outside the project**: deleting, moving, or changing permissions of anything outside the project folder: absolute paths, `~`, `$HOME`, drive roots, and `..` (for example `rm -rf ~`).
 
+**Allowed without prompting.** These targets are exempt from every group above except Disk-level, so work with them directly and don't treat a block as a reason to retry in another form:
+
+- Anything strictly inside a temp folder: `/tmp`, `/var/tmp`, the folder in `TMPDIR`, `TEMP`, or `TMP` (on Windows `%LOCALAPPDATA%\Temp`). The session scratchpad lives there, so it is covered. The temp folder itself is not.
+- Anything strictly inside a Claude session worktree: `<repo>/.claude/worktrees/<name>/...`. The worktree folder itself and `<name>/*` are not.
+- For deletes only, relative build or dependency output: `node_modules`, `bin`, `obj`, `dist`, `build`, `target`, `out`, `coverage`, `.next`, `.cache`, `.venv`, `__pycache__`, and similar.
+
+The hook checks the literal path in the command, so it can't be tricked and neither should you try:
+
+- Write the full absolute path (for example the scratchpad path from the system prompt). Relative paths into temp or worktrees, `~`, variables (`$TMPDIR`, `$env:TEMP`, `%TEMP%`), and braces are not exempt.
+- A `..` anywhere in the path, or a wildcard in a folder part, is never exempt. A wildcard in the last part is fine only below the exempt folder (`/tmp/x/*`, not `/tmp/*`).
+- Symlinks and junctions are resolved first; a link inside temp that points elsewhere is not exempt.
+- A command that changes directory first (`cd`, `pushd`, `Set-Location`) gets no relative exemption: use absolute paths instead of `cd x && rm -rf build`.
+- Every target of a command must be exempt; one outside target blocks the whole command.
+
 - The user chose these guardrails deliberately. Do not avoid them: no rephrased or equivalent commands, aliases, scripts or wrappers, other tools or languages that touch the same files (`python -c`, `xargs`, `robocopy`, ...), and no editing of the settings, the hook, or this file to switch them off.
-- When a guardrail triggers, say what the operation will do and wait for the user's answer. If the user declines, do not run it or an equivalent.
-- In a sub-session or agent where nobody can answer the prompt, stop at the guarded operation, finish the rest of the task, and report the blocked operation to the parent session or the user.
+- When a guardrail blocks something, say what the operation would have done and why you wanted it, then wait for the user. They may run it themselves or give new instructions. If they decline, do not run it or an equivalent.
+- The hook matches raw command text, so a command that only mentions a guarded operation (in a commit message, say) can be blocked too; reword it.
+- In a sub-session or agent, finish the rest of the task and report the blocked operation to the parent session or the user.
 
 ## Git guardrails
 
-This project has git guardrails: certain dangerous git operations need the user's confirmation. They are enforced by a `PreToolUse` hook (`.claude/hooks/git-guard.sh`, registered in the project's Claude settings). The guarded groups are:
+This project has git guardrails: certain dangerous git operations are blocked automatically, without a prompt. They are enforced by a `PreToolUse` hook (`.claude/hooks/git-guard.sh`, registered in the project's Claude settings) on both the Bash and PowerShell tools. The guarded groups are:
 
 - **Publishing**: `git push`, including force-pushes and tag pushes.
 - **Rewriting history**: `git reset --hard`, `git rebase`, `git commit --amend`, `git filter-branch`.
@@ -37,9 +52,21 @@ This project has git guardrails: certain dangerous git operations need the user'
 - **Remote and config changes**: `git remote add`, `set-url`, and `remove`, and `git config --global` or `--system`.
 - **Submodules and worktrees**: `git submodule deinit`, `git submodule update --force`, `git worktree remove`, and `git worktree prune`.
 
+**Allowed without prompting.** Work with these directly and don't treat a block as a reason to retry in another form:
+
+- A guarded command that carries an explicit absolute `git -C <path>` strictly inside a temp folder (`/tmp`, `/var/tmp`, the folder in `TMPDIR`, `TEMP`, or `TMP`, which includes the session scratchpad) or inside a Claude session worktree (`<repo>/.claude/worktrees/<name>/...`). Use this for scratch repositories, e.g. `git -C /tmp/demo clean -fd`.
+- `git worktree remove` of a path inside `<repo>/.claude/worktrees/`.
+
+The hook checks the literal path in the command, so it can't be tricked and neither should you try:
+
+- Write the full absolute path. A plain command in the current directory, a relative `-C`, `~`, variables (`$TMPDIR`, `$env:TEMP`), braces, a `..` or a wildcard in the path are never exempt, even when the current directory is itself a session worktree.
+- Symlinks and junctions are resolved first; a link inside temp that points elsewhere is not exempt.
+- Every git command in the line needs its own allowed `-C`; one plain `git push` after an exempt command still blocks.
+
 - The user chose these guardrails deliberately. Do not avoid them: no rephrased or equivalent commands, aliases, `git -c` overrides, scripts or wrappers, other tools that call git, and no editing of the settings, the hook, or this file to switch them off.
-- When a guardrail triggers, say what the operation will do and wait for the user's answer. If the user declines, do not run it or an equivalent.
-- In a sub-session or agent where nobody can answer the prompt, stop at the guarded operation, finish the rest of the task, and report the blocked operation to the parent session or the user.
+- When a guardrail blocks something, say what the operation would have done and why you wanted it, then wait for the user. They may run it themselves or give new instructions. If they decline, do not run it or an equivalent.
+- The hook matches raw command text, so a command that only mentions a guarded operation (in a commit message, say) can be blocked too; reword it.
+- In a sub-session or agent, finish the rest of the task and report the blocked operation to the parent session or the user.
 
 ## Changelog
 

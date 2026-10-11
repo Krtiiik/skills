@@ -33,13 +33,13 @@ _Avoid_: plugin, template, snippet
 **Seed**: A prompt file in a module's folder that a sub-agent runs to draft the content of an installed doc file; it runs only if a chosen option has `run_seeds: true`.
 _Avoid_: template (that is the empty file the seed fills)
 
-**Settings**: A JSON object on an option that `setup-project` deep-merges into `.claude/settings.json` (or `settings.local.json` in local mode) after user approval.
+**Settings**: A JSON object on an option, or on a module for what it always needs, that `setup-project` deep-merges into `.claude/settings.json` (or `settings.local.json` in local mode) after user approval.
 
 **Local mode**: The case where the target is `CLAUDE.local.md`, so setup files are private and gitignored and must be kept in `.worktreeinclude` and the local git exclude file.
 
-**Guardrail**: A module group that makes dangerous git or filesystem operations ask for confirmation, enforced either as permission rules or as a hook script.
+**Guardrail**: A module group that makes dangerous git or filesystem operations get blocked automatically by a `PreToolUse` hook script on the Bash and PowerShell tools. The hook denies instead of asking so Claude never waits on a prompt; permission rules are not offered because they cannot express the exemptions below.
 
-**Enforcement**: The guardrail decision between permission `rules` (static `ask` patterns) and a `hook` (a shell script that can express exemptions rules cannot).
+**Disposable target**: A literal absolute path strictly inside a temp folder (which includes the session scratchpad) or a Claude session worktree. Guardrail hooks let these through; anything relative, containing `..` or variables, or reached via a symlink or a preceding `cd` is not exempt, so a relative path cannot be used to pose as one.
 
 **Project docs**: The Claude-facing files (CONTEXT, ARCHITECTURE, CONVENTIONS, TODO) installed by the Project Documentation module and kept current as the project changes.
 
