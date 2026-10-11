@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `bump-version` skill: suggests a semver bump from the changelog's `[Unreleased]` entries, asks the user to confirm it, updates the changelog and version files, commits and tags the release, then offers to push the commit and tag.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added

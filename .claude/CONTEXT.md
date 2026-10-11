@@ -9,7 +9,7 @@ Glossary for Claude: the terms and top-level concepts this project uses with a s
 
 ## Language
 
-**Skill**: A Claude Code skill shipped by this plugin (`grilling`, `setup-project`), defined by a `SKILL.md` with a name and trigger description.
+**Skill**: A Claude Code skill shipped by this plugin (`grilling`, `setup-project`, `bump-version`), defined by a `SKILL.md` with a name and trigger description.
 
 **Module**: A single Markdown file in `setup-project`'s `modules/` folder that contributes one section, and optionally decisions, settings and files, to a generated project instruction file.
 _Avoid_: plugin, template, snippet
