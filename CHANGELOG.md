@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `worktree-cleanup` skill: lists linked worktrees and local branches already merged into main (clean worktrees only) and removes the ones the user picks.
 - `setup-project` now checks upfront for existing Claude files (instruction files, settings, hooks, module doc files), lists them, and asks once whether to append, overwrite or cancel.
 
 ### Changed
