@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `setup-project` modules may carry top-level `settings` and `files`, applied whenever the module is kept rather than per chosen option.
+- `filesystem-guardrails` hook: targets that are literal absolute paths strictly inside a temp folder (including the Claude scratchpad) or a Claude session worktree are allowed for the delete, move, permission, and outside-the-project groups. Relative paths, `..`, variables, symlinks that lead out, and paths after a `cd` get no exemption.
+
+### Changed
+
+- `filesystem-guardrails` hook now denies risky operations outright instead of asking, and the module no longer offers permission-rule enforcement.
+- The guardrail text in the generated CLAUDE.md lists the allowed locations, so Claude uses them directly instead of retrying after a block.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added

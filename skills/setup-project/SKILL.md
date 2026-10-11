@@ -14,6 +14,8 @@ Each `modules/<id>.md` is a frontmatter block followed by the section text that 
 name: Semantic Versioning
 description: One line shown in the picker.
 suggests: [other-module-id]   # optional, picker hint only
+settings: {}                  # optional, merged into the settings file whenever the module is kept
+files: {}                     # optional, copied into the project whenever the module is kept (same shape as an option's)
 decisions:                    # optional
   - id: scheme                # referenced in the body as {{scheme}}
     question: Which version scheme?
@@ -46,6 +48,8 @@ Everything below the frontmatter is inserted verbatim except placeholders and li
 
 An option may carry `settings` (a JSON-compatible object, e.g. permission rules or hooks) and `files` (destination path in the project → source path inside `modules/<id>/`). Both are applied only when that option is chosen, in step 9. A `files` destination may contain placeholders.
 
+A module may carry the same `settings` and `files` at its top level, for what the module always needs regardless of the options chosen (a hook that every chosen group relies on). They apply whenever the module is kept, in step 9, and placeholders in them resolve like in an option's.
+
 An option's `when` maps a decision id to a `key` (or to the `value` of an option without a `key`). Its `settings` and `files` are applied only if the chosen option of that decision matches, so one decision's options can feed settings that depend on another decision. Ask the decision named in `when` before step 9 applies anything.
 
 A decision may carry the same `when` at its own level. It is asked only if the named decision's chosen option matches; otherwise it is not asked, its placeholders resolve to empty text, and none of its options' `settings`, `files` or `seed` apply. Ask the decision it names in an earlier call.
@@ -74,7 +78,7 @@ An option may carry `scouted: true` for facts that only the project can supply, 
    - New or overwritten file: start with `# <project name>` (from the manifest, else the folder name), a blank line, then the sections.
    - Append: add the sections after the existing content, separated by a blank line, leaving it untouched.
 8. **Write the instruction file.** Write directly without a further confirmation.
-9. **Apply settings and files.** Skip if no chosen option carries `settings` or `files`.
+9. **Apply settings and files.** Skip if no kept module or chosen option carries `settings` or `files`.
    - **Settings.** Target `.claude/settings.json` in the project root, or `.claude/settings.local.json` when step 3 chose `CLAUDE.local.md`. Read it if it exists; if it is not valid JSON, stop and report rather than overwrite. Deep-merge every chosen `settings` object: objects merge key by key, arrays are concatenated without duplicates, existing values are preserved. Show the resulting diff (or the full content for a new file) and ask for approval with **AskUserQuestion** before writing; settings can change what Claude is allowed to run, so this step is never silent. If declined, print the snippet for the user to paste and continue.
    - **Files.** For each `files` entry, copy the source from `modules/<id>/` to the destination (placeholders resolved) in the project root, creating folders as needed. Ask before overwriting an existing file. Mark scripts executable where the platform supports it.
    - **Local mode.** Applies when step 3 chose `CLAUDE.local.md` and settings were written to `.claude/settings.local.json` or files were copied into the project. Those are private or gitignored, and a fresh git worktree (used by sub-sessions and isolated agents) does not contain gitignored files. Ask once with **AskUserQuestion** whether to proceed, then:
