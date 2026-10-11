@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `worktree-task` skill: runs one task in a worktree session (optionally via another skill such as `grilling`), commits, presents a uniform report (summary, commits, tests, notes, to consider, TODO suggestions), and on request merges main into the branch and fast-forwards main under a git-ref advisory lock so peer sessions do not lose work.
+- `setup-project` now checks upfront for existing Claude files (instruction files, settings, hooks, topic doc files), lists them, and asks once whether to append, overwrite or cancel.
 
 ### Changed
 
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `testing` is now two topics: the guideline `testing` (rules) and the technicality `test-commands` (how tests are organised and run). `issue-tracking` likewise splits into the guideline `issue-handling` (read freely, ask before writing) and the technicality `issue-tracking` (platform and CLI guide).
 - The `git-guardrails` and `filesystem-guardrails` topics are now technicalities; `project-docs`, `auto-commit`, `better-git-messages`, `keep-a-changelog` and `semver` are guidelines.
 - `setup-project` technicality `filesystem-guardrails`: the `fs-guard.sh` hook no longer asks about `>` redirects into temp folders or build and dependency output.
+- The upfront choice replaces the separate "existing instruction file" prompt and the per-file overwrite prompts. Settings are always merged and still shown for approval.
 
 ## [0.2.0] - 2026-10-11
 
