@@ -1,7 +1,7 @@
 ---
-name: Testing
-description: How the project's tests are organised and run (all, related to a change, single, fast vs slow), found by scouting, plus general testing guidelines.
-suggests: [better-git-messages]
+name: Test Commands
+description: How the project's tests are organised and run (all, related to a change, single, fast vs slow), found by scouting the project.
+suggests: [testing]
 decisions:
   - id: layout
     question: How should CLAUDE.md describe the project's test framework and layout?
@@ -55,14 +55,10 @@ decisions:
         description: Do not document a split.
 ---
 
-## Testing
+## Test commands
 
 - {{layout}}
 - {{run_all}}
 - {{run_related}}
 - {{run_single}}
 - {{run_split}}
-- When a test fails, fix the code. Change a test only when it is wrong or the requested behaviour changed, and say so. Never skip, delete or loosen a test to get it passing.
-- Reproduce a bug with a failing test before fixing it, and keep that test.
-- Ship tests with new or changed behaviour in the same change.
-- Follow the project's existing test framework, layout, naming and helpers; do not introduce another framework or assertion library.
