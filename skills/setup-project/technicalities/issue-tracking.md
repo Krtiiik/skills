@@ -1,7 +1,7 @@
 ---
 name: Issue Tracking
-description: Work with the project's GitHub or GitLab issues through the gh or glab CLI, with a short command guide and an approval rule for anything that writes.
-suggests: [better-git-messages]
+description: Where the project's issues live (GitHub or GitLab) and a short guide to the gh or glab CLI commands for them.
+suggests: [issue-handling]
 decisions:
   - id: platform
     question: Which platform hosts this project's issues?
@@ -38,6 +38,4 @@ decisions:
 ## Issue tracking
 
 - Issues live on {{platform}}. Read `{{location:rel}}ISSUE-TRACKING.md` for the commands before your first use.
-- Read issues (list, view) freely whenever they help you understand the task.
-- Creating, commenting on, editing, closing or reopening an issue notifies other people. Do it only when the user explicitly asked for that action; otherwise ask first with AskUserQuestion.
 - When a `{{platform.key}}` command fails on authentication, report the error and let the user log in.
