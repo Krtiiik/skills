@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `setup-project` now checks upfront for existing Claude files (instruction files, settings, hooks, module doc files), lists them, and asks once whether to append, overwrite or cancel.
+
+### Changed
+
+- The upfront choice replaces the separate "existing instruction file" prompt and the per-file overwrite prompts. Settings are always merged and still shown for approval.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added

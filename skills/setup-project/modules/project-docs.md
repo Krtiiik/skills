@@ -6,7 +6,7 @@ decisions:
   - id: docs
     multi: true
     question: Which docs should Claude have for this project?
-    scout: Check which of CONTEXT.md, ARCHITECTURE.md, CONVENTIONS.md and TODO.md already exist (project root, docs/, .claude/) and say so in that option's description, since installing over them prompts for overwrite. Recommend CONTEXT and ARCHITECTURE when the project has more than a handful of source files (git ls-files); recommend CONVENTIONS when the code has established patterns; recommend TODO when the user works with Claude across many sessions. For a near-empty repo recommend none beyond TODO.
+    scout: Check which of CONTEXT.md, ARCHITECTURE.md, CONVENTIONS.md and TODO.md already exist (project root, docs/, .claude/) and say so in that option's description, since the upfront overwrite/append policy decides whether they are replaced or kept. Recommend CONTEXT and ARCHITECTURE when the project has more than a handful of source files (git ls-files); recommend CONVENTIONS when the code has established patterns; recommend TODO when the user works with Claude across many sessions. For a near-empty repo recommend none beyond TODO.
     options:
       - label: CONTEXT
         value: "- @{{location:rel}}CONTEXT.md: glossary of the project's terms and top-level concepts. Use these terms exactly in code, commits and conversation."
