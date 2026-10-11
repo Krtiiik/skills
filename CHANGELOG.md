@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-11
+
 ### Added
 
 - `auto-commit` guideline: new `attribution` decision to keep or suppress Claude's `Co-Authored-By` commit trailer and "Generated with Claude Code" pull request line. Suppressing it also sets Claude Code's `attribution` setting to empty.
