@@ -16,6 +16,7 @@ Personal collection of [Claude Code](https://claude.com/claude-code) skills.
 | `krtiiik:grilling` | Grill the user about a plan, decision, or idea in clickable question rounds, then confirm the shared understanding through plan-review approval. |
 | `krtiiik:bump-version` | Cut a release: suggest a semver bump from the changelog, confirm it, update the changelog and version files, commit and tag, then offer to push both. |
 | `krtiiik:worktree-task` | Run one task end to end in a worktree session: work, commit, a uniform report (commits, tests, to consider, TODO suggestions), then optionally merge into main safely alongside peer sessions. |
+| `krtiiik:update` | Update this plugin to the latest version by refreshing its marketplace from GitHub first. |
 | `krtiiik:setup-project` | Set up Claude for a project: assemble a `CLAUDE.md` (plus optional settings and hooks) from the [guidelines](./skills/setup-project/guidelines/) (how Claude should work) and [technicalities](./skills/setup-project/technicalities/) (project-specific commands and enforcement) you pick. |
 
 ### Adding a `setup-project` guideline or technicality

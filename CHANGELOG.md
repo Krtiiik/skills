@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `update` skill: refreshes the `krtiiik-skills` marketplace from GitHub and updates the `krtiiik` plugin on the machine it runs on; a restart applies the update.
+
 ## [0.5.0] - 2026-10-16
 
 ### Changed
