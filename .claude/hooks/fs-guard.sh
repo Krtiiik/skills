@@ -6,6 +6,8 @@
 # Disposable targets are allowed: literal absolute paths strictly inside a temp folder
 # (this covers the Claude scratchpad) or a Claude session worktree
 # (.claude/worktrees/<name>/...), and, for deletes, relative build or dependency output.
+# Git-tracked targets inside the project are allowed too (git can restore them), except the
+# guardrail files themselves; so are new paths that do not exist yet, for the move group.
 # Anything it cannot parse with confidence is denied. Keep the path helpers in sync
 # with git-guard.sh.
 
@@ -38,6 +40,12 @@ canon() {
 
 proj=$(norm "${CLAUDE_PROJECT_DIR:-}")
 home=$(norm "${HOME:-}")
+projc=""
+[ -z "$proj" ] || projc=$(canon "$proj")
+# Directory the command runs in, which relative paths resolve against: "cwd" from the hook input.
+cwd=$(printf '%s' "$input" | grep -Eo '"cwd"[[:space:]]*:[[:space:]]*"[^"]*"' | head -n 1 |
+  sed -e 's/^[^:]*:[[:space:]]*"//' -e 's/"$//' -e 's/\\\\/\//g')
+cwd=$(norm "${cwd:-$PWD}")
 
 # Disposable roots. Temp: the usual folders plus TMPDIR/TEMP/TMP, unless one of those would contain
 # the project or the home folder. Worktrees: <repo>/.claude/worktrees, found from the project folder
@@ -139,10 +147,52 @@ is_outside() {
   return 1
 }
 
-# Is target $1 fine for operation kind $2 (delete also accepts build output)?
+# Resolve the literal path $1 to its project-relative form in $rel. Fails for anything not strictly
+# inside the project, for relative paths after a cd, for .., variables, ~, braces and wildcards, and
+# for the guardrail files (.git, hooks, settings, CLAUDE.md), which tracked-ness must never unlock.
+# Symlinks are resolved first, so a link cannot lead out of the project.
+proj_rel() {
+  pr=${1#\'}
+  pr=${pr%\'}
+  case $pr in ''|*..*|*\$*|*%*|*\`*|~*|*[{}]*|*[*?[]*) return 1 ;; esac
+  [ -n "$projc" ] || return 1
+  pr=$(norm "$pr")
+  case $pr in
+    /*) ;;
+    *) [ -z "$has_cd" ] || return 1; pr=$cwd/$pr ;;
+  esac
+  pr=$(canon "$pr")
+  case $pr in "$projc"/?*) rel=${pr#"$projc"/} ;; *) return 1 ;; esac
+  case $(printf '%s' "$rel" | tr 'A-Z' 'a-z') in
+    .git|.git/*|.claude|.claude/hooks|.claude/hooks/*|.claude/settings.json|.claude/settings.local.json|claude.md|.claude/claude.md) return 1 ;;
+  esac
+  return 0
+}
+
+# Is the literal path $1 tracked by git? A directory counts only when every file under it is tracked
+# (no untracked or ignored files) and it holds no submodule.
+tracked_path() {
+  proj_rel "$1" || return 1
+  command -v git >/dev/null 2>&1 || return 1
+  if [ -d "$projc/$rel" ]; then
+    tl=$(git -C "$proj" --literal-pathspecs -c core.quotePath=false ls-files -s -- "$rel" 2>/dev/null)
+    [ -n "$tl" ] || return 1
+    if printf '%s\n' "$tl" | grep -q '^160000'; then return 1; fi
+    [ -z "$(git -C "$proj" --literal-pathspecs -c core.quotePath=false ls-files -o --directory --no-empty-directory -- "$rel" 2>/dev/null | head -n 1)" ]
+  else
+    [ "$(git -C "$proj" --literal-pathspecs -c core.quotePath=false ls-files -- "$rel" 2>/dev/null)" = "$rel" ]
+  fi
+}
+
+# Is the literal path $1 a project path that does not exist yet? Creating it destroys nothing.
+new_path() { proj_rel "$1" && [ ! -e "$projc/$rel" ] && [ ! -L "$projc/$rel" ]; }
+
+# Is target $1 fine for operation kind $2 (delete also accepts build output, move also new paths)?
 exempt() {
   allowed_path "$1" && return 0
   [ "$2" = delete ] && build_output "$1" && return 0
+  tracked_path "$1" && return 0
+  [ "$2" = move ] && new_path "$1" && return 0
   return 1
 }
 
@@ -261,7 +311,7 @@ for group in "$@"; do
 done
 
 if [ -n "$reason" ]; then
-  msg="Blocked by the project filesystem guardrails: $reason. Do not retry, rephrase or work around it: tell the user what you wanted to do and why, and let them run it or decide. Allowed without prompting: literal absolute paths strictly inside a temp folder (/tmp, /var/tmp, the TEMP or TMPDIR folder, which includes the session scratchpad) or inside a Claude session worktree (${wr:-<repo>/.claude/worktrees}/<name>/...), and, for deletes, relative build or dependency output such as node_modules, dist or bin. Paths with .., variables or wildcards in the folder part, relative paths into temp or worktrees, and anything after a cd get no exemption: use the literal absolute path. If the command only mentions the operation in text, for example in a commit message, reword it."
+  msg="Blocked by the project filesystem guardrails: $reason. Do not retry, rephrase or work around it: tell the user what you wanted to do and why, and let them run it or decide. Allowed without prompting: literal absolute paths strictly inside a temp folder (/tmp, /var/tmp, the TEMP or TMPDIR folder, which includes the session scratchpad) or inside a Claude session worktree (${wr:-<repo>/.claude/worktrees}/<name>/...), for deletes, relative build or dependency output such as node_modules, dist or bin, and files or folders inside the project that git tracks (a folder only if everything under it is tracked), plus new paths that do not exist yet for moves and overwrites. The guardrail files (.git, .claude/hooks, the Claude settings, CLAUDE.md) are never unlocked. Paths with .., variables or wildcards in the folder part, relative paths into temp or worktrees, wildcards for tracked files, and anything after a cd get no exemption: use the literal path. If the command only mentions the operation in text, for example in a commit message, reword it."
   printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$msg"
 fi
 exit 0

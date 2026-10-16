@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `filesystem-guardrails` hook: git-tracked targets inside the project are now allowed for the delete, move and permission groups (a folder only if everything under it is tracked, with no untracked or ignored files and no submodule). Moves and overwrites may also create paths that do not exist yet. The guardrail files (`.git`, `.claude/hooks`, the Claude settings, `CLAUDE.md`) are never unlocked, and wildcards, `..`, variables and relative paths after a `cd` still get no exemption. Relative paths resolve against the `cwd` the hook receives.
+
 ## [0.4.0] - 2026-10-11
 
 ### Added

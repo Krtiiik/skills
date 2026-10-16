@@ -11,15 +11,15 @@ decisions:
       - key: delete
         label: Deleting
         value: "- **Deleting**: `rm`, `rmdir`, `unlink`, `shred`, `find -delete`, and in PowerShell `Remove-Item`, `del`, and `rd`."
-        description: "rm, rmdir, unlink, shred, find -delete, Remove-Item, del, rd. Temp, scratchpad, session-worktree, and build-output targets are allowed."
+        description: "rm, rmdir, unlink, shred, find -delete, Remove-Item, del, rd. Temp, scratchpad, session-worktree, build-output, and git-tracked targets are allowed."
       - key: move
         label: Moving & overwriting
         value: "- **Moving and overwriting**: `mv`, forced `cp`, `truncate`, `tee`, and in PowerShell `Move-Item`, forced `Copy-Item`, `Set-Content`, `Out-File`, and `Clear-Content`, plus shell redirection (`>`) where the hook can match it."
-        description: "mv, cp -f, truncate, tee, Move-Item, Set-Content, Out-File, and > redirects. Temp, scratchpad, and session-worktree targets are allowed."
+        description: "mv, cp -f, truncate, tee, Move-Item, Set-Content, Out-File, and > redirects. Temp, scratchpad, session-worktree, git-tracked, and not-yet-existing targets are allowed."
       - key: perms
         label: Permissions & ownership
         value: "- **Permissions and ownership**: recursive or world-writable `chmod`, and `chown`, `chgrp`, `icacls`, `takeown`."
-        description: "chmod -R / 777, chown, chgrp, icacls, takeown. Plain chmod +x is allowed, and so are temp, scratchpad, and session-worktree targets."
+        description: "chmod -R / 777, chown, chgrp, icacls, takeown. Plain chmod +x is allowed, and so are temp, scratchpad, session-worktree, and git-tracked targets."
       - key: disk
         label: Disk-level
         value: "- **Disk-level**: `dd`, `mkfs`, `fdisk`, `parted`, `wipefs`, and in Windows `format` and `diskpart` (including `Format-Volume` and `Clear-Disk`)."
@@ -50,11 +50,13 @@ This project has filesystem guardrails: certain dangerous or irreversible filesy
 - Anything strictly inside a temp folder: `/tmp`, `/var/tmp`, the folder in `TMPDIR`, `TEMP`, or `TMP` (on Windows `%LOCALAPPDATA%\Temp`). The session scratchpad lives there, so it is covered. The temp folder itself is not.
 - Anything strictly inside a Claude session worktree: `<repo>/.claude/worktrees/<name>/...`. The worktree folder itself and `<name>/*` are not.
 - For deletes only, relative build or dependency output: `node_modules`, `bin`, `obj`, `dist`, `build`, `target`, `out`, `coverage`, `.next`, `.cache`, `.venv`, `__pycache__`, and similar.
+- Files inside the project that git tracks, since git can restore them. A folder counts only when everything under it is tracked (no untracked or ignored files, no submodule). Uncommitted changes to a tracked file are not recoverable, so commit first if they matter. The guardrail files (`.git`, `.claude/hooks`, the Claude settings, `CLAUDE.md`) are never unlocked this way.
+- For moves and overwrites only, a project path that does not exist yet (a rename destination, a new file). Overwriting an existing untracked file is still blocked.
 
 The hook checks the literal path in the command, so it can't be tricked and neither should you try:
 
-- Write the full absolute path (for example the scratchpad path from the system prompt). Relative paths into temp or worktrees, `~`, variables (`$TMPDIR`, `$env:TEMP`, `%TEMP%`), and braces are not exempt.
-- A `..` anywhere in the path, or a wildcard in a folder part, is never exempt. A wildcard in the last part is fine only below the exempt folder (`/tmp/x/*`, not `/tmp/*`).
+- Write the full absolute path (for example the scratchpad path from the system prompt). Relative paths into temp or worktrees, `~`, variables (`$TMPDIR`, `$env:TEMP`, `%TEMP%`), and braces are not exempt. Relative paths to tracked files work, unless the command changes directory first.
+- A `..` anywhere in the path, or a wildcard in a folder part, is never exempt. A wildcard in the last part is fine only below the exempt folder (`/tmp/x/*`, not `/tmp/*`), and never unlocks tracked files: name them.
 - Symlinks and junctions are resolved first; a link inside temp that points elsewhere is not exempt.
 - A command that changes directory first (`cd`, `pushd`, `Set-Location`) gets no relative exemption: use absolute paths instead of `cd x && rm -rf build`.
 - Every target of a command must be exempt; one outside target blocks the whole command.

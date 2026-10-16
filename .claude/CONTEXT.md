@@ -45,6 +45,8 @@ _Avoid_: template (that is the empty file the seed fills)
 
 **Disposable target**: A literal absolute path strictly inside a temp folder (which includes the session scratchpad) or a Claude session worktree. Guardrail hooks let these through; anything relative, containing `..` or variables, or reached via a symlink or a preceding `cd` is not exempt, so a relative path cannot be used to pose as one.
 
+**Tracked target**: A path inside the project that git tracks (a folder only if everything under it is tracked), which the filesystem guardrail lets through for delete, move and permission changes because git can restore it. The guardrail's own files are never unlocked this way, so tracked-ness cannot be used to switch the guardrails off.
+
 **Project docs**: The Claude-facing files (CONTEXT, ARCHITECTURE, CONVENTIONS, TODO) installed by the Project Documentation guideline and kept current as the project changes.
 
 **TODO Inbox / Suggested**: The two sections of the shared TODO.md; Inbox is written by the user, Suggested is proposed by Claude, and Claude works on items only when asked.
