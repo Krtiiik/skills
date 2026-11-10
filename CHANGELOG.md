@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `setup-project`: new "Hidden" target-file choice (hidden mode). It writes everything Claude-related into `.claude/` (the changelog keeps its own path), appends `.claude/` and `.worktreeinclude` to the local git exclude file so nothing shows in git, and offers to untrack and commit any `.claude/` files git already tracks.
+
 ## [0.6.0] - 2026-10-16
 
 ### Added

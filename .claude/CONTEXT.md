@@ -18,7 +18,7 @@ _Avoid_: module, plugin, template, snippet
 
 **Technicality**: A topic in `technicalities/` holding project-specific tooling: commands, CLIs, and the settings or hooks that enforce a guardrail. A subject that needs both kinds is two topics, one per category, that suggest each other (`testing` and `test-commands`, `issue-handling` and `issue-tracking`).
 
-**Instruction file**: The CLAUDE file that `setup-project` writes (`./CLAUDE.md`, `./.claude/CLAUDE.md` or `./CLAUDE.local.md`), assembled from the chosen topics' bodies, guidelines first.
+**Instruction file**: The CLAUDE file that `setup-project` writes (`./CLAUDE.md`, `./.claude/CLAUDE.md`, `./CLAUDE.local.md`, or `./.claude/CLAUDE.md` in **Hidden mode**), assembled from the chosen topics' bodies, guidelines first.
 
 **Decision**: A question a topic declares in its frontmatter, whose chosen option fills the topic body's `{{id}}` placeholders.
 
@@ -40,6 +40,8 @@ _Avoid_: template (that is the empty file the seed fills)
 **Settings**: A JSON object on an option, or on a topic for what it always needs, that `setup-project` deep-merges into `.claude/settings.json` (or `settings.local.json` in local mode) after user approval.
 
 **Local mode**: The case where the target is `CLAUDE.local.md`, so setup files are private and gitignored and must be kept in `.worktreeinclude` and the local git exclude file.
+
+**Hidden mode**: The case where the user picks the Hidden target, so every Claude file lives under `.claude/` (except the changelog) and the whole folder sits in the local git exclude file, leaving git with no trace of Claude. Unlike Local mode it hides the folder, not individual files, and tracked files must be untracked to disappear.
 
 **Guardrail**: A technicality (git or filesystem) that blocks dangerous git or filesystem operations automatically with a `PreToolUse` hook script on the Bash and PowerShell tools. The hook denies instead of asking so Claude never waits on a prompt; permission rules are not offered because they cannot express the exemptions below.
 
