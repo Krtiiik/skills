@@ -1,6 +1,6 @@
 ---
 name: grilling
-description: Grill the user about a plan, decision, or idea through clickable AskUserQuestion rounds in plan mode, with lightweight visuals when useful, ending in plan-review approval. Use when the user wants to stress-test their thinking or says "grill".
+description: Grill the user about a plan, decision, or idea through clickable AskUserQuestion rounds in plan mode, ending in plan-review approval. Use when the user wants to stress-test their thinking or says "grill".
 ---
 
 Interview the user relentlessly until you share their understanding of the plan. Model it as a **design tree**: every decision branches into the decisions that depend on it.
@@ -14,16 +14,15 @@ Work the tree in **rounds**. The **frontier** is every open decision whose prere
 Each round:
 
 1. Compute the frontier.
-2. If the round's decisions are about design or anything visual, first render its visuals (see **Visuals**).
-3. Put the whole frontier to the user with **AskUserQuestion**, never as questions in your response text. A call takes at most 4 questions, so split a larger frontier across consecutive calls. That is still one round, with the frontier fixed until the last call is answered.
-4. Read the answers, `annotations` included. Notes attached to a selection are part of the answer and may reshape the tree.
-5. Update the tree. Settled decisions unblock the questions that depended on them. A question that depends on a decision still open this round belongs to a later round.
+2. Put the whole frontier to the user with **AskUserQuestion**, never as questions in your response text. A call takes at most 4 questions, so split a larger frontier across consecutive calls. That is still one round, with the frontier fixed until the last call is answered.
+3. Read the answers, `annotations` included. Notes attached to a selection are part of the answer and may reshape the tree.
+4. Update the tree. Settled decisions unblock the questions that depended on them. A question that depends on a decision still open this round belongs to a later round.
 
 Repeat until the frontier is empty.
 
 ## Writing a question
 
-Each question must stand on its own. Assume the user knows only the initial prompt, the earlier rounds' questions and answers, and visuals you cite by label. Do not count on response text written in the same turn before the dialog: the UI collapses it into a one-line summary or drops it, so the user often never sees it. Facts from sub-agents, files you read and research results go into the brief itself, never as "see above" or "based on the findings".
+Each question must stand on its own. Assume the user knows only the initial prompt and the earlier rounds' questions and answers. Do not count on response text written in the same turn before the dialog: the UI collapses it into a one-line summary or drops it, so the user often never sees it. Facts from sub-agents, files you read and research results go into the brief itself, never as "see above" or "based on the findings".
 
 For each frontier question, set:
 
@@ -32,20 +31,12 @@ For each frontier question, set:
   ```
   Session storage: the API must keep login state across 3 replicas.
   Affects: logout, scaling, Redis dependency.
-  Fact: no shared cache exists today. See Diagram A (current request flow).
+  Fact: no shared cache exists today.
   → Where should sessions live?
   ```
 - `header`: a short label (≤12 chars) naming the decision, e.g. "Auth method".
 - `options`: 2-4 mutually exclusive choices, each with a `label` and a `description` that spells out the tradeoff. Put your recommended answer first and end its label with "(Recommended)". Cover the recommended path and the main real alternatives; the user can always answer in free text via "Other". Set `multiSelect: true` only when the decision genuinely isn't either/or.
 - `preview` (optional, per option): use it when the choice is between concrete artifacts that are easier to compare side by side than to describe: code snippets, config or schema shapes, ASCII layouts, API signatures. Single-select only. Abstract decisions get prose descriptions instead.
-
-## Visuals
-
-When a decision is about design or anything visual (layouts, flows, architecture, structure), show a quick visual before the round.
-
-- **Kinds**: diagrams, rough UI mockups, code or config shapes. Keep each lightweight: something you produce in one go, never a runnable prototype or anything that takes minutes.
-- **Medium**: an inline widget tool when the session has one; otherwise a Mermaid or ASCII block in the response text. Snippets that differ per option still go in `preview`. No pages or links to open.
-- **Labels**: give each visual a label (Diagram A, Mockup B, …) and render it in the same turn, right before the AskUserQuestion call. It will show collapsed. Each brief that relies on a visual names its label and repeats its key point in a few words, so the user knows to expand it and can still answer without it.
 
 ## Facts and decisions
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- `grilling`: the skill no longer renders visuals (diagrams, mockups) before a round. They were collapsed in the session view, so the user did not see them. Per-option `preview` snippets stay.
+
 ## [0.8.0] - 2026-11-20
 
 ### Changed
