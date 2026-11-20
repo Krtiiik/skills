@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-20
+
 ### Changed
 
 - `grilling`: every question now carries a compact, self-contained brief (what is decided, what it affects, the facts and earlier decisions it depends on). Response text written before the question dialog is often collapsed, so questions no longer rely on it.
