@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `grilling`: every question now carries a compact, self-contained brief (what is decided, what it affects, the facts and earlier decisions it depends on). Response text written before the question dialog is often collapsed, so questions no longer rely on it.
+- `grilling`: for design or visual decisions, the skill renders lightweight labelled visuals (diagrams, rough mockups, code shapes) before a round, and the briefs cite them by label.
+
 ## [0.7.0] - 2026-11-10
 
 ### Added
